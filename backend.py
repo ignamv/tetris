@@ -70,7 +70,6 @@ def piezaNueva():
 			return True
 	for (x,y) in pieza:
 		grilla[y][x] = colorPieza
-	print pieza
 
 def mostrarGrilla():
 	for fila in grilla:
@@ -94,6 +93,19 @@ if __name__ == "__main__":
 			# Me fijo si completó una fila y agrego una pieza nueva
 			pieza = []
 			# TODO: fijarme si completó una fila
+			# Me fijo qué filas falta completar
+			incompletas = []
+			for fila in grilla:
+				if min(fila) == 0:
+					incompletas.append(fila)
+			ncompletas = filas-len(incompletas)
+			if ncompletas > 0:
+				print ncompletas,"filas completas"
+			# Esas filas son las únicas que van a quedar, todas al fondo
+			grilla[ncompletas:] = incompletas
+			# Lo demás queda vacío
+			grilla[:ncompletas] = [[0 for i in range(columnas)]
+				for j in range(ncompletas)]
 			if piezaNueva():
 				print "Perdiste"
 				break
