@@ -9,14 +9,14 @@ columnas = 10
 grilla = [[0 for i in range(columnas)] for j in range(filas)]
 colores_max = 5
 
-formas = []
+formas = cargarPiezas("piezas.txt")
 # Duplas con las coordenadas de cada celda que pertenece a la pieza actual
 pieza = []
 colorPieza = 0
 
 def mover(dx,dy):
 	global pieza
-	# Me fijo que haya lugar para mover la pieza
+	# Me fijo que haya lugar para mover la pieza y que no se salga del tablero
 	piezaNueva = []
 	for (x,y) in pieza:
 		if y+dy == filas or x+dx == columnas or y+dy < 0 or x+dx < 0 or \
@@ -42,7 +42,6 @@ def cargarPiezas(archivo):
 			piezas.append([])
 			continue
 		piezas[-1].append([(0,1)[c != " "] for c in linea.rstrip()])
-		#separado[-1].append(linea.rstrip())
 
 	# Ahora me aseguro que las filas de cada pieza tengan largo uniforme
 	for pieza in piezas:
@@ -54,9 +53,11 @@ def cargarPiezas(archivo):
 def piezaNueva():
 	from random import random
 	global pieza, grilla, colorPieza
+	# Selecciono una forma al azar
 	nueva = formas[int(random()*len(formas))]
 	ancho = max([len(fila) for fila in nueva ])
 	pieza = []
+	# Posición inicial
 	dx = int(random()*(columnas-ancho))
 	# Traduzco de la grilla que describe la pieza al array de coordenadas
 	for (y,fila) in enumerate(nueva):
@@ -78,21 +79,14 @@ def mostrarGrilla():
 		print
 
 if __name__ == "__main__":
-	formas = cargarPiezas("piezas.txt")
-	if 0:
-		pieza = [(2,1),(3,1),(4,1),(3,2)]
-		colorPieza = 1
-		for (x,y) in pieza:
-			grilla[y][x] = colorPieza
 	piezaNueva()
-	salir = False
 	while 1:
+		# Hago caer la pieza, si da true no pudo caer
 		if mover(0,1):
 			print "Se trabó"
 			# La pieza no puede caer más. 
 			# Me fijo si completó una fila y agrego una pieza nueva
 			pieza = []
-			# TODO: fijarme si completó una fila
 			# Me fijo qué filas falta completar
 			incompletas = []
 			for fila in grilla:
